@@ -1,17 +1,23 @@
 import torch
 from torch import nn
-from torch import functional as F
+from torch.nn import functional as F
 from torch import optim
+from torch.utils.data import DataLoader
 
-from .others.unetwork import UNetwork
+from others.unetwork import UNetwork
+
+# TODO Tensorboard
 
 class Model():
     def __init__(self) -> None:
-        """instantiate model + optimizer + loss function
+        """instantiate model + optimizer + loss function + GPU support
         """
         self.unet = UNetwork(in_channels=3)
         self.opt = optim.Adam(self.unet.parameters(), 0.001, (0.9, 0.99), 1e-8)
         self.loss = nn.MSELoss()
+        self.batch_size = 128
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.unet.to(self.device)
 
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
@@ -26,7 +32,33 @@ class Model():
             train_target (torch.Tensor): size (N, C, H, W) containing another noisy version of the same images
             num_epochs (int): number of epochs
         """
-        pass
+        # TODO Add data augmentation features
+        self.unet.train(True)
+        # Use dataloader to create mini-batch
+        tarin_pair = torch.stack((train_input / 255., train_target / 255.), dim=1) # Create (input, target) pair (N, 2, C, H, W)
+        train_loader = DataLoader(tarin_pair, batch_size=self.batch_size, shuffle=True)
+
+        for epoch in range(num_epochs):
+            running_loss = 0.0
+            for idx, img_pairs in enumerate(train_loader):
+                source, target = torch.chunk(img_pairs, 2, 1)
+                source = source.squeeze(dim=1).to(self.device)
+                target = target.squeeze(dim=1).to(self.device)
+
+                source_output = self.unet(source)
+
+                loss = self.loss(source_output, target)
+
+                self.opt.zero_grad()
+                loss.backward()
+                self.opt.step()
+
+                running_loss = running_loss + loss.item()
+                if idx % 20 == 19:
+                    print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 20))
+                    running_loss = 0.0
+        print('Training Finished!')
+
 
     def predict(self, test_input) -> torch.Tensor:
         """Use the model to predict
@@ -38,3 +70,9 @@ class Model():
             torch.Tensor: size (N1, C, H, W)
         """
         pass
+
+
+if __name__ == "__main__":
+    noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
+    n2n = Model()
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 1000)
