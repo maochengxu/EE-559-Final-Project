@@ -7,7 +7,6 @@ from torch.utils.data import DataLoader
 from others.unetwork import UNetwork
 
 # TODO Tensorboard
-# Check git
 
 class Model():
     def __init__(self) -> None:
