@@ -54,8 +54,8 @@ class Model():
                 self.opt.step()
 
                 running_loss = running_loss + loss.item()
-                if idx % 20 == 19:
-                    print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 20))
+                if idx % 100 == 0:
+                    print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 100))
                     running_loss = 0.0
         print('Training Finished!')
 
@@ -75,4 +75,4 @@ class Model():
 if __name__ == "__main__":
     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
     n2n = Model()
-    n2n.train(noisy_imgs_1, noisy_imgs_2, 1000)
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 100)
