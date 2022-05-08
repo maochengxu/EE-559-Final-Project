@@ -15,7 +15,7 @@ class Model():
         self.unet = UNetwork(in_channels=3)
         self.opt = optim.Adam(self.unet.parameters(), 0.001, (0.9, 0.99), 1e-8)
         self.loss = nn.MSELoss()
-        self.batch_size = 128
+        self.batch_size = 100
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.unet.to(self.device)
 
@@ -38,6 +38,7 @@ class Model():
         tarin_pair = torch.stack((train_input / 255., train_target / 255.), dim=1) # Create (input, target) pair (N, 2, C, H, W)
         train_loader = DataLoader(tarin_pair, batch_size=self.batch_size, shuffle=True)
 
+        print("Training Started!")
         for epoch in range(num_epochs):
             running_loss = 0.0
             for idx, img_pairs in enumerate(train_loader):
@@ -54,7 +55,7 @@ class Model():
                 self.opt.step()
 
                 running_loss = running_loss + loss.item()
-                if idx % 100 == 0:
+                if (idx + 1) % 100 == 0:
                     print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 100))
                     running_loss = 0.0
         print('Training Finished!')
@@ -73,6 +74,6 @@ class Model():
 
 
 if __name__ == "__main__":
-    noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
+    noisy_imgs_1, noisy_imgs_2 = torch.load('./EE-559-Final-Project/Data/train_data.pkl')
     n2n = Model()
     n2n.train(noisy_imgs_1, noisy_imgs_2, 100)
