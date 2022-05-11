@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
-from torchsummary import summary
+# from torchsummary import summary
 
 from others.unetwork import UNetwork
 
@@ -23,7 +23,7 @@ class Model():
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
-        self.unet = torch.load('bestmodel.pth')
+        self.unet = torch.load('./bestmodel.pth')
         self.unet.eval()
 
     def train(self, train_input, train_target, num_epochs) -> None:
@@ -78,8 +78,7 @@ class Model():
         return output
 
 
-if __name__ == "__main__":
-    # noisy_imgs_1, noisy_imgs_2 = torch.load('./EE-559-Final-Project/Data/train_data.pkl')
-    noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
-    n2n = Model()
-    n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
+# if __name__ == "__main__":
+#     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
+#     n2n = Model()
+#     n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
