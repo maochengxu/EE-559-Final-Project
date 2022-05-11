@@ -3,6 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
+from torchsummary import summary
 
 from others.unetwork import UNetwork
 
@@ -22,7 +23,8 @@ class Model():
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
-        pass
+        self.unet = torch.load('bestmodel.pth')
+        self.unet.eval()
 
     def train(self, train_input, train_target, num_epochs) -> None:
         """Train the model
@@ -59,6 +61,7 @@ class Model():
                     print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 100))
                     running_loss = 0.0
         print('Training Finished!')
+        torch.save(self.unet, 'bestmodel.pth')
 
 
     def predict(self, test_input) -> torch.Tensor:
@@ -70,10 +73,13 @@ class Model():
         Returns:
             torch.Tensor: size (N1, C, H, W)
         """
-        pass
+        self.unet.eval()
+        output = self.unet(test_input)
+        return output
 
 
 if __name__ == "__main__":
-    noisy_imgs_1, noisy_imgs_2 = torch.load('./EE-559-Final-Project/Data/train_data.pkl')
+    # noisy_imgs_1, noisy_imgs_2 = torch.load('./EE-559-Final-Project/Data/train_data.pkl')
+    noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
     n2n = Model()
-    n2n.train(noisy_imgs_1, noisy_imgs_2, 100)
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
