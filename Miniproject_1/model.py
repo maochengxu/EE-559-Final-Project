@@ -3,8 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
-# from torchsummary import summary
-
 from others.unetwork import UNetwork
 
 # TODO Tensorboard
@@ -23,7 +21,7 @@ class Model():
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
-        self.unet = torch.load('./bestmodel.pth')
+        self.unet = torch.load('./Miniproject_1/bestmodel.pth')
         self.unet.eval()
 
     def train(self, train_input, train_target, num_epochs) -> None:
@@ -34,7 +32,6 @@ class Model():
             train_target (torch.Tensor): size (N, C, H, W) containing another noisy version of the same images
             num_epochs (int): number of epochs
         """
-        # TODO Add data augmentation features
         self.unet.train(True)
         # Use dataloader to create mini-batch
         tarin_pair = torch.stack((train_input / 255., train_target / 255.), dim=1) # Create (input, target) pair (N, 2, C, H, W)
@@ -61,7 +58,7 @@ class Model():
                     print('Epoch %d, Batch %d >>>>>>>>>>>> Loss: %.3f' % (epoch, idx + 1, running_loss / 100))
                     running_loss = 0.0
         print('Training Finished!')
-        torch.save(self.unet, 'bestmodel.pth')
+        torch.save(self.unet, './Miniproject_1/bestmodel.pth')
 
 
     def predict(self, test_input) -> torch.Tensor:
@@ -78,7 +75,7 @@ class Model():
         return output
 
 
-# if __name__ == "__main__":
-#     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
-#     n2n = Model()
-#     n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
+if __name__ == "__main__":
+    noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
+    n2n = Model()
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 10)

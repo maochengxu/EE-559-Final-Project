@@ -3,6 +3,7 @@ from tqdm import tqdm
 import sys
 sys.path.append("/home/paperspace/Project/EE-559-Final-Project/Miniproject_1")
 from model import Model
+import matplotlib.pyplot as plt
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -35,3 +36,9 @@ def test_model_pnsr(model, project_number):
 
 n2n = Model()
 test_model_pnsr(n2n, 1)
+# n2n.load_pretrained_model()
+# val_path = "./Data/val_data.pkl"
+# val_input, val_target = torch.load(val_path)
+# val_input = (val_input/255.).to(device)
+# output = n2n.predict(val_input[0].reshape((1, 3, 32, 32)))
+# plt.imshow((output.detach().cpu().squeeze()).T)
