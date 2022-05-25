@@ -37,11 +37,3 @@ def test_model_pnsr(model, project_number):
 
 n2n = Model()
 test_model_pnsr(n2n, 1)
-out = n2n.predict(torch.rand(1, 3, 512, 512) * 255)
-print(out.max())
-# n2n.load_pretrained_model()
-# val_path = "./Data/val_data.pkl"
-# val_input, val_target = torch.load(val_path)
-# val_input = (val_input/255.).to(device)
-# output = n2n.predict(val_input[0].reshape((1, 3, 32, 32)))
-# plt.imshow((output.detach().cpu().squeeze()).T)

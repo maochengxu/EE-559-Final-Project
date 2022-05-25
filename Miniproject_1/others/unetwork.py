@@ -101,4 +101,4 @@ class UNetwork(nn.Module):
         y = F.leaky_relu(self.dec_conv1b(y), 0.1)
         y = self.dec_conv1c(y)
 
-        return y
+        return torch.sigmoid(y)
