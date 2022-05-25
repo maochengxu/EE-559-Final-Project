@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
-from others.unetwork import UNetwork
+from .others.unetwork import UNetwork
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 import time
@@ -121,6 +121,6 @@ if __name__ == "__main__":
     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
     n2n = Model()
     t1 = time.time()
-    n2n.train(noisy_imgs_1, noisy_imgs_2, 1)
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
     t2 = time.time()
     print('Training lasts %.1f s' % (t2 - t1))

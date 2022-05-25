@@ -1,7 +1,7 @@
 import torch
 from tqdm import tqdm
-import sys
-sys.path.append("/home/paperspace/Project/EE-559-Final-Project/Miniproject_1")
+import sys, os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from model import Model
 import matplotlib.pyplot as plt
 import numpy as np
