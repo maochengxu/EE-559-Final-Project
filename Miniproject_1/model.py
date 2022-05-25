@@ -4,6 +4,7 @@ from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
 from others.unetwork import UNetwork
+from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 import time
 
@@ -24,7 +25,9 @@ class Model():
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
-        self.unet = torch.load('./Miniproject_1/bestmodel.pth')
+        model_path = Path(__file__).parent / "bestmodel.pth"
+        self.unet = torch.load(model_path, map_location=self.device)
+        # self.unet = torch.load('./Miniproject_1/bestmodel.pth')
         # self.unet = torch.load('/home/paperspace/Project/EE-559-Final-Project/Miniproject_1/bestmodel.pth')
         self.unet.to(self.device)
         self.unet.eval()

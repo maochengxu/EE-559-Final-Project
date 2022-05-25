@@ -1,7 +1,8 @@
 import torch
 from tqdm import tqdm
-import sys
-sys.path.append("/home/paperspace/Project/EE-559-Final-Project/Miniproject_1")
+import sys, os
+# sys.path.append("/home/paperspace/Project/EE-559-Final-Project/Miniproject_1")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from model import Model
 import matplotlib.pyplot as plt
 
@@ -28,7 +29,7 @@ def test_model_pnsr(model, project_number):
         model_outputs = []
         for b in tqdm(range(0, val_input.size(0), mini_batch_size)):
             output = model.predict(val_input.narrow(0, b, mini_batch_size))
-            model_outputs.append(output.cuda())
+            model_outputs.append(output.cpu())
         model_outputs = torch.cat(model_outputs, dim=0) / 255.
         output_psnr = compute_psnr(model_outputs, val_target)
     print(f"[PSNR BEFORE: {output_psnr_before:.2f} dB]")
@@ -37,3 +38,4 @@ def test_model_pnsr(model, project_number):
 
 n2n = Model()
 test_model_pnsr(n2n, 1)
+# print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
