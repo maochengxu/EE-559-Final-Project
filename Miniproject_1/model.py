@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
-from .others.unetwork import UNetwork
+from others.unetwork import UNetwork
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 import time
@@ -21,7 +21,7 @@ class Model():
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.unet.to(self.device)
         self.tb = False
-        self.save = True
+        self.save = False
 
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
@@ -29,8 +29,6 @@ class Model():
         model_path = Path(__file__).parent / "bestmodel.pth"
         unet_state_dict = torch.load(model_path, map_location=self.device)
         self.unet.load_state_dict(unet_state_dict)
-        # self.unet = torch.load('./Miniproject_1/bestmodel.pth')
-        # self.unet = torch.load('/home/paperspace/Project/EE-559-Final-Project/Miniproject_1/bestmodel.pth')
         self.unet.to(self.device)
         self.unet.eval()
 
