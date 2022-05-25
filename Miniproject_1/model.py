@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch import optim
 from torch.utils.data import DataLoader
-from others.unetwork import UNetwork
+from .others.unetwork import UNetwork
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 import time
@@ -21,12 +21,14 @@ class Model():
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.unet.to(self.device)
         self.tb = False
+        self.save = True
 
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
         model_path = Path(__file__).parent / "bestmodel.pth"
-        self.unet = torch.load(model_path, map_location=self.device)
+        unet_state_dict = torch.load(model_path, map_location=self.device)
+        self.unet.load_state_dict(unet_state_dict)
         # self.unet = torch.load('./Miniproject_1/bestmodel.pth')
         # self.unet = torch.load('/home/paperspace/Project/EE-559-Final-Project/Miniproject_1/bestmodel.pth')
         self.unet.to(self.device)
@@ -92,7 +94,8 @@ class Model():
         if self.tb:
             writer.close()
         print('Training Finished!')
-        torch.save(self.unet, './Miniproject_1/bestmodel.pth')
+        if self.save:
+            torch.save(self.unet.state_dict(), './Miniproject_1/bestmodel.pth')
 
     def predict(self, test_input) -> torch.Tensor:
         """Use the model to predict
@@ -120,6 +123,6 @@ if __name__ == "__main__":
     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
     n2n = Model()
     t1 = time.time()
-    n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
+    n2n.train(noisy_imgs_1, noisy_imgs_2, 1)
     t2 = time.time()
     print('Training lasts %.1f s' % (t2 - t1))
