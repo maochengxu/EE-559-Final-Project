@@ -5,6 +5,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 from others.unetwork import UNetwork
 from torch.utils.tensorboard import SummaryWriter
+import time
 
 
 class Model():
@@ -18,13 +19,13 @@ class Model():
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.unet.to(self.device)
-        self.tb = True
+        self.tb = False
 
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
         """
-        # self.unet = torch.load('./Miniproject_1/bestmodel.pth')
-        self.unet = torch.load('/home/paperspace/Project/EE-559-Final-Project/Miniproject_1/bestmodel.pth')
+        self.unet = torch.load('./Miniproject_1/bestmodel.pth')
+        # self.unet = torch.load('/home/paperspace/Project/EE-559-Final-Project/Miniproject_1/bestmodel.pth')
         self.unet.to(self.device)
         self.unet.eval()
 
@@ -115,4 +116,7 @@ class Model():
 if __name__ == "__main__":
     noisy_imgs_1, noisy_imgs_2 = torch.load('./Data/train_data.pkl')
     n2n = Model()
+    t1 = time.time()
     n2n.train(noisy_imgs_1, noisy_imgs_2, 10)
+    t2 = time.time()
+    print('Training lasts %.1f s' % (t2 - t1))
