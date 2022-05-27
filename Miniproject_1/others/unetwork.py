@@ -10,46 +10,48 @@ class UNetwork(nn.Module):
     def __init__(self, in_channels=3, out_channels=3) -> None:
         super().__init__()
         # Encoder
-        self.enc_conv0 = nn.Conv2d(in_channels, 48, kernel_size=3, stride=1, padding='same')
+        self._in_channels_layer = 24
+        self._out_channels_layer = 24
+        self.enc_conv0 = nn.Conv2d(in_channels, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
-        self.enc_conv1 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv1 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
         self.pool_1 = nn.MaxPool2d(kernel_size=2)
 
-        self.enc_conv2 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv2 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
         self.pool_2 = nn.MaxPool2d(kernel_size=2)
 
-        self.enc_conv3 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv3 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
         self.pool_3 = nn.MaxPool2d(kernel_size=2)
 
-        self.enc_conv4 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv4 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
         self.pool_4 = nn.MaxPool2d(kernel_size=2)
 
-        self.enc_conv5 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv5 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
         self.pool_5 = nn.MaxPool2d(kernel_size=2)
 
-        self.enc_conv6 = nn.Conv2d(48, 48, kernel_size=3, stride=1, padding='same')
+        self.enc_conv6 = nn.Conv2d(self._in_channels_layer, self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
         # Decoder
         self.upsample5 = nn.Upsample(scale_factor=2, mode='nearest')
-        self.dec_conv5a = nn.Conv2d(96, 96, kernel_size=3, stride=1, padding='same')
-        self.dec_conv5b = nn.Conv2d(96, 96, kernel_size=3, stride=1, padding='same')
+        self.dec_conv5a = nn.Conv2d(2*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
+        self.dec_conv5b = nn.Conv2d(2*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
         self.upsample4 = nn.Upsample(scale_factor=2, mode='nearest')
-        self.dec_conv4a = nn.Conv2d(144, 96, kernel_size=3, stride=1, padding='same')
-        self.dec_conv4b = nn.Conv2d(96, 96, kernel_size=3, stride=1, padding='same')
+        self.dec_conv4a = nn.Conv2d(3*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
+        self.dec_conv4b = nn.Conv2d(2*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
         self.upsample3 = nn.Upsample(scale_factor=2, mode='nearest')
-        self.dec_conv3a = nn.Conv2d(144, 96, kernel_size=3, stride=1, padding='same')
-        self.dec_conv3b = nn.Conv2d(96, 96, kernel_size=3, stride=1, padding='same')
+        self.dec_conv3a = nn.Conv2d(3*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
+        self.dec_conv3b = nn.Conv2d(2*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
         self.upsample2 = nn.Upsample(scale_factor=2, mode='nearest')
-        self.dec_conv2a = nn.Conv2d(144, 96, kernel_size=3, stride=1, padding='same')
-        self.dec_conv2b = nn.Conv2d(96, 96, kernel_size=3, stride=1, padding='same')
+        self.dec_conv2a = nn.Conv2d(3*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
+        self.dec_conv2b = nn.Conv2d(2*self._out_channels_layer, 2*self._out_channels_layer, kernel_size=3, stride=1, padding='same')
 
         self.upsample1 = nn.Upsample(scale_factor=2, mode='nearest')
-        self.dec_conv1a = nn.Conv2d(96+in_channels, 64, kernel_size=3, stride=1, padding='same')
-        self.dec_conv1b = nn.Conv2d(64, 32, kernel_size=3, stride=1, padding='same')
-        self.dec_conv1c = nn.Conv2d(32, out_channels, kernel_size=3, stride=1, padding='same')
+        self.dec_conv1a = nn.Conv2d(2*self._out_channels_layer+in_channels, 32, kernel_size=3, stride=1, padding='same')
+        self.dec_conv1b = nn.Conv2d(32, 16, kernel_size=3, stride=1, padding='same')
+        self.dec_conv1c = nn.Conv2d(16, out_channels, kernel_size=3, stride=1, padding='same')
     
     def forward(self, x) -> torch.Tensor:
         y = x

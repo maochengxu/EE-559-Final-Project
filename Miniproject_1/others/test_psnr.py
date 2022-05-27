@@ -6,7 +6,6 @@ from model import Model
 import matplotlib.pyplot as plt
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# device = torch.device('cpu')
 
 def compute_psnr(x, y, max_range=1.0):
     assert x.shape == y.shape and x.ndim == 4
