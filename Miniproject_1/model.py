@@ -21,7 +21,7 @@ class Model():
             'cuda' if torch.cuda.is_available() else 'cpu')
         self.unet.to(self.device)
         self.tb = False
-        self.save = False
+        self.save = True
 
     def load_pretrained_model(self) -> None:
         """Loads the parameters saved in bestmodel.pth into the model
